@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+.dark {
+  --bg: hsl(0, 0%, 10%);
+  --bg-shade-dark: hsl(0, 0%, 5%);
+  --bg-shade-light: hsl(0, 0%, 15%);
+  --bg-primary-shade: hsl(30, 100%, 10%);
+  --bg-accent-shade: hsl(215, 100%, 10%);
+  --fg: hsl(0, 0%, 100%);
+  --primary: hsl(30, 100%, 50%);
+  --accent: hsl(215, 100%, 60%);
+  --text-subtle: hsl(0, 0%, 70%);
+  --text-secondary: hsl(0, 0%, 80%);
+  --text-body: hsl(0, 0%, 90%);
+  --text-heading: hsl(0, 0%, 100%);
+  --border: hsl(0, 0%, 50%);
+}
+
+.light {
+  --bg: hsl(0, 0%, 95%);
+  --bg-shade-dark: hsl(0, 0%, 90%);
+  --bg-shade-light: hsl(0, 0%, 100%);
+  --bg-primary-shade: hsl(30, 100%, 98%);
+  --bg-accent-shade: hsl(215, 100%, 98%);
+  --fg: hsl(0, 0%, 0%);
+  --primary: hsl(30, 100%, 50%);
+  --accent: hsl(215, 100%, 60%);
+  --text-subtle: hsl(0, 0%, 20%);
+  --text-secondary: hsl(0, 0%, 40%);
+  --text-body: hsl(0, 0%, 60%);
+  --text-heading: hsl(0, 0%, 80%);
+  --border: hsl(0, 0%, 50%);
+}
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-background-shade-dark: var(--bg-shade-dark);
+  --color-background-shade-light: var(--bg-shade-light);
+  --color-background-primary-shade: var(--bg-primary-shade);
+  --color-background-accent-shade: var(--bg-accent-shade);
+  --color-foreground: var(--fg);
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-text-subtle: var(--text-subtle);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-body: var(--text-body);
+  --color-text-heading: var(--text-heading);
+  --color-border: var(--border);
+  --font-sans: "Nunito", sans-serif;
+  --text-md: 16px;
+}
+
+body {
+  background: var(--bg);
+}
