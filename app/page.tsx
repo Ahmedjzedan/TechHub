@@ -1,9 +1,17 @@
-"use client";
-
-import Image from "next/image";
-import { useTheme } from "next-themes";
+import ItemsList from "@/components/pages/itemsList";
+import Catigories from "@/components/sections/home/catigories";
+import HeroSection from "@/components/sections/home/hero";
 
 export default function Home() {
-  const { resolvedTheme, setTheme } = useTheme();
-  return <div className="">hello hello</div>;
+  return (
+    <div className="flex flex-col gap-8">
+      <Catigories className="sm:flex" />
+      <HeroSection />
+      <ItemsList
+        searchBy="category"
+        searchValue="laptops"
+        sectionName="Top Seller"
+      />
+    </div>
+  );
 }
