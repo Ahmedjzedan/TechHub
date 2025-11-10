@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import shevron from "@/public/shevron.svg";
+import shevron from "@/public/shevron.svg"; // This might not be used now, Shevron component is.
 import Link from "next/link";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -46,7 +46,16 @@ export default function SidebarGroupElement({
             transition={{ duration: 0.2, ease: "easeInOut" }}
             className=" flex mx-2 p-2"
           >
-            <div className="border-r-2 border-border/30">{}</div>
+            {/* --- THIS IS THE ANIMATED BORDER --- */}
+            <motion.div
+              initial={{ height: 0 }} // Start with 0 height
+              animate={{ height: "auto" }} // Animate to auto height
+              exit={{ height: 0 }} // Animate back to 0 height on exit
+              transition={{ duration: 0.2, ease: "easeInOut" }} // Match children transition
+              className="border-r-2 border-border/30"
+            ></motion.div>
+            {/* --- END ANIMATED BORDER --- */}
+
             <div className="py-2 flex flex-col gap-4 [&>*]hover:bg-background-shade-dark w-full">
               {children}
             </div>

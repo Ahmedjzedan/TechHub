@@ -1,10 +1,8 @@
 Functionality to add
-On clicking checkout in payment info make if 200 make return checkout done and forawrd to homepage
+
 Code Fixes
-Leaving cart, order modal, throws you to the home page always
 
 Style addtion
-make the line at the side bar extrude with an animtion smoothly
 
 Style Fixes  
  Always center the search bar
