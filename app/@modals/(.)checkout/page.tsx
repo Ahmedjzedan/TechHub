@@ -3,7 +3,7 @@ import PaymentSelection from "@/components/pages/paymentSelection";
 
 export default function Checkout() {
   return (
-    <OrderItemsModal back={true}>
+    <OrderItemsModal level={2} back={true}>
       <PaymentSelection></PaymentSelection>
     </OrderItemsModal>
   );

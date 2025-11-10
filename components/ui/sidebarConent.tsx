@@ -105,7 +105,10 @@ export default function SidebarContent({ setIsActive }: SidebarProps) {
             Icon={<ShoppingCartIcon className="w-5 h-5" />}
           >
             <SidebarButtonLink href="/cart"> Cart </SidebarButtonLink>
-            <SidebarButtonLink href="/wishlist"> Wishlist </SidebarButtonLink>
+            <SidebarButtonLink auth={true} href="/wishlist">
+              {" "}
+              Wishlist{" "}
+            </SidebarButtonLink>
             <SidebarButtonLink href="/orders"> Orders </SidebarButtonLink>
           </SidebarGroupElement>
           <SidebarGroupElement

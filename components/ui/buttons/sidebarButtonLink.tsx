@@ -2,24 +2,37 @@
 
 import { useRouter } from "next/navigation";
 import React from "react";
-// --- 1. Import the custom hook ---
 import { useSidebar } from "@/components/ui/sidebarConent"; // Adjust the path if needed
+import { useSession } from "@/components/providers/sessionProvider";
+import { toast } from "sonner";
 
 interface SidebarButtonLinkProps {
   href: string;
   children: React.ReactNode;
+  auth?: boolean;
 }
 
 export default function SidebarButtonLink({
   href,
   children,
+  auth = false,
 }: SidebarButtonLinkProps) {
   const router = useRouter();
   const { setIsActive } = useSidebar();
+  const session = useSession();
+  const user = session.user;
 
   const handleClick = () => {
     router.push(href);
     setIsActive(false);
+    if (auth) {
+      if (!user) {
+        toast.error("You must sign in to store items in your wishlist!", {
+          position: "bottom-right",
+        });
+        return;
+      }
+    }
   };
 
   return (

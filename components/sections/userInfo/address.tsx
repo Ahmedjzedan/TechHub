@@ -27,7 +27,6 @@ export default function Address() {
           </SelectContent>
         </Select>
         <div className="flex flex-col">
-          <span className="text-text-body text-sm mb-2">State</span>
           <Select>
             <SelectTrigger className="border-2 border-border">
               <SelectValue placeholder="State" />

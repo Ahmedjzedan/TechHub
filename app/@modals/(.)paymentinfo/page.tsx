@@ -3,7 +3,7 @@ import OrderItemsModal from "@/components/ui/wrappers/orderItemsModal";
 
 export default function PaymentInfoModal() {
   return (
-    <OrderItemsModal>
+    <OrderItemsModal level={3} back={true}>
       <CardInfoAndAddress />
     </OrderItemsModal>
   );

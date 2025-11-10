@@ -6,65 +6,65 @@ import { sessions } from "@/db/schema";
 
 export const runtime = "nodejs";
 
-const protectedPaths = [
-  "/orders",
-  "/dashboard",
-  "/userinfo",
-  "/account-settings",
-];
-
-// Define your public-only routes (routes a logged-in user should NOT see)
+const protectedPaths = ["/orders", "/userinfo", "/wishlist"];
 const publicOnlyPaths = ["/signin", "/signup"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
-  // 1. Get the session token from the user's cookies
   const sessionToken = request.cookies.get("session_token")?.value;
 
-  // 2. Check the database for a valid, non-expired session
-  let session = null;
+  // 1. Check the DB for a valid session
+  let isAuthenticated = false;
   if (sessionToken) {
     try {
-      session = await db.query.sessions.findFirst({
+      const session = await db.query.sessions.findFirst({
         where: eq(sessions.sessionToken, sessionToken),
       });
+
+      // We only check for existence and expiration
+      if (session && new Date() < session.expiresAt) {
+        isAuthenticated = true;
+      }
     } catch (error) {
       console.error("Middleware DB query failed:", error);
-      // If the DB fails, assume no session for safety
     }
   }
 
-  const isAuthenticated = session && new Date() < session.expiresAt;
-
-  const isVisitingProtectedPath = protectedPaths.some((path) =>
-    pathname.startsWith(path)
-  );
-
-  if (isVisitingProtectedPath && !isAuthenticated) {
-    const homeUrl = new URL("/", request.url);
-
-    const response = NextResponse.redirect(homeUrl);
+  // 2. Handle Protected Routes
+  if (isVisiting(pathname, protectedPaths) && !isAuthenticated) {
+    // Redirect unauthenticated users
+    const response = NextResponse.redirect(new URL("/", request.url));
     response.cookies.set("session_token", "", { expires: new Date(0) });
     return response;
   }
 
-  // 5. Handle Public-Only Routes
-  const isVisitingPublicOnlyPath = publicOnlyPaths.some((path) =>
-    pathname.startsWith(path)
-  );
-
-  if (isVisitingPublicOnlyPath && isAuthenticated) {
-    // User is logged in but is trying to access the signin/signup page.
-    // Redirect them to their dashboard.
-    const dashboardUrl = new URL("/", request.url);
-    return NextResponse.redirect(dashboardUrl);
+  // 3. Handle Public-Only Routes
+  if (isVisiting(pathname, publicOnlyPaths) && isAuthenticated) {
+    // Redirect authenticated users
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
+  // All good, continue to the page
   return NextResponse.next();
 }
 
-// Config: This runs the middleware on all paths except static assets
+/**
+ * Helper function to check if the current path matches a list
+ */
+function isVisiting(pathname: string, paths: string[]): boolean {
+  return paths.some((path) => pathname.startsWith(path));
+}
+
+// --- THIS IS THE MOST IMPORTANT FIX ---
+// This matcher is specific. It ONLY runs on the pages we've defined
+// and avoids all API routes, static files, and internal requests.
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    "/orders/:path*",
+    "/userinfo/:path*",
+    "/wishlist/:path*",
+    "/signin",
+    "/signup",
+  ],
 };
