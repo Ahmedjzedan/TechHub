@@ -18,7 +18,6 @@ import {
   // ... other imports
 } from "@/db/schema";
 import { InferSelectModel } from "drizzle-orm";
-import { date } from "drizzle-orm/mysql-core";
 
 type Item = InferSelectModel<typeof items>;
 type Category = InferSelectModel<typeof categories>;
@@ -278,6 +277,8 @@ export async function InsertCartItem(
   }
 }
 
+// Inside your app/actions/actions.ts file
+
 export async function getItemsById(itemIds: string | number | number[]) {
   try {
     let finalItemIds: number[] = [];
@@ -300,26 +301,20 @@ export async function getItemsById(itemIds: string | number | number[]) {
       return [];
     }
 
+    // 2. Build the 'where' clause
     const conditions = finalItemIds.map((id) => eq(items.id, id));
     const whereClause = or(...conditions);
 
+    // 3. Fetch the full item data
     const fetchedItems = await db.query.items.findMany({
       where: whereClause,
       with: fullItemInclude,
     });
 
-    const fullItems = fetchedItems.map(flattenTags);
-
-    const cartItemFormat = fullItems.map((item) => {
-      return {
-        cartId: null,
-        itemId: item.id,
-        quantity: 1,
-        item: item,
-      };
-    });
-
-    return cartItemFormat;
+    // 4. --- THIS IS THE FIX ---
+    // Return the flattened items directly, not the cart format
+    return fetchedItems.map(flattenTags);
+    // --- END OF FIX ---
   } catch (err) {
     console.error("Error fetching items by ID array:", err);
     return [];

@@ -16,6 +16,7 @@ import { useSession } from "../providers/sessionProvider";
 export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   const [sidebarActive, setSidebarActive] = useState(false);
+  const [search, setSearch] = useState("");
   const session = useSession();
 
   useEffect(() => {
@@ -53,13 +54,22 @@ export default function Navbar() {
             </span>
           </button>
         </div>
-        <div className="flex-grow hidden sm:flex">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault(); // 1. Stop the page reload
+            router.push("/search/" + search); // 2. 'search' must be a state variable
+          }}
+          className="flex-grow hidden sm:flex"
+        >
           <Input
+            name="search"
             placeholder="Search..."
+            value={search} // 3. Add value
+            onChange={(e) => setSearch(e.target.value)} // 4. Add onChange
             className="border-border focus:border-primary rounded-2xl border-2 w-full text-xs h-8 md:text-xs
-            dark:bg-background-shade-dark bg-background-shade-dark"
+    dark:bg-background-shade-dark bg-background-shade-dark"
           />
-        </div>
+        </form>
         <div className="flex-grow sm:hidden flex"></div>
         <div className="flex justify-end items-center gap-4 flex-grow">
           {!!session.user ? (

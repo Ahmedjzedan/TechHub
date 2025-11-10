@@ -1,14 +1,9 @@
 "use client";
 
-import Image, { StaticImageData } from "next/image";
-import xpsFront from "@/public/images/xpsFront.png";
+import Image from "next/image";
 import { Button } from "../button";
-import { ArrowIcon, WishListIcon } from "@/public/svg";
 import { useState } from "react";
-import PreviewImages from "./previewImages";
 import ArrowButtons from "@/components/ui/buttons/arrows";
-import { Description } from "@radix-ui/react-dialog";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AddToCart, removeFromCart } from "@/app/actions/actions";
 import { useSession } from "@/components/providers/sessionProvider";
@@ -123,7 +118,9 @@ export default function HorizontalItem({
                       }
                     }
                     toast.success(`${itemName} is removed from cart`);
-                    removeItem(id);
+                    if (removeItem) {
+                      removeItem(id);
+                    }
                   }}
                   className="w-30"
                 >
