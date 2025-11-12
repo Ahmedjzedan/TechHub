@@ -4,8 +4,6 @@ import { db } from "@/db";
 import { eq } from "drizzle-orm";
 import { sessions } from "@/db/schema";
 
-export const runtime = "nodejs";
-
 const protectedPaths = ["/orders", "/userinfo", "/wishlist"];
 const publicOnlyPaths = ["/signin", "/signup"];
 
@@ -60,7 +58,6 @@ function isVisiting(pathname: string, paths: string[]): boolean {
 // and avoids all API routes, static files, and internal requests.
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
     "/orders/:path*",
     "/userinfo/:path*",
     "/wishlist/:path*",
