@@ -11,7 +11,7 @@ import { FullItem } from "@/app/actions/actions"; // Import your type
 type OrderDetails = {
   id: number;
   status: string;
-  totalAmount: number;
+  totalAmount: number; // This is the total from the DB
   createdAt: Date;
   orderItems: {
     itemId: number;
@@ -38,9 +38,10 @@ export default function OrderDetailsPage() {
         const data = await GetOrderItems(orderId);
         console.log(data);
         setOrder(data);
+        setIsLoading(false); // 👈 Move this inside the async function
       };
       fetchOrder();
-      setIsLoading(false);
+      // setIsLoading(false); // 👈 Don't set this here, it's too early
     }
   }, [orderId]); // Re-run if the orderId changes
 
@@ -67,6 +68,12 @@ export default function OrderDetailsPage() {
     (orderItem) => orderItem.priceAtPurchase * orderItem.quantity
   );
 
+  // --- THIS IS THE FIX ---
+  // 6. Calculate subTotal from the prices array
+  const subTotalRaw = prices.reduce((total, price) => total + price, 0);
+  const subTotal = Math.round(subTotalRaw * 100) / 100;
+  // --- END OF FIX ---
+
   return (
     <div className="flex flex-col gap-4 p-4 overflow-x-hidden">
       {/* 6. Map over the order items and render them */}
@@ -86,7 +93,8 @@ export default function OrderDetailsPage() {
           showItem={true}
         />
       ))}
-      <CheckoutSummery prices={prices} />
+      {/* 7. Pass the calculated subTotal to the component */}
+      <CheckoutSummery subTotal={subTotal} />
     </div>
   );
 }
