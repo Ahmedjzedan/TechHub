@@ -22,7 +22,7 @@ as long as it meets the conditions below."
               <li>Proof of purchase (receipt or order number) is required.</li>
               <li>
                 Certain products (like software, digital goods, or
-                hygiene-related items) can't be returned.
+                hygiene-related items) can`t be returned.
               </li>
             </ul>
           }
@@ -33,15 +33,15 @@ as long as it meets the conditions below."
         />
         <Info
           text="Refunds"
-          hiddenText="Once your return is received and inspected, we'll notify you about your refund approval. Refunds are issued to your original payment method within [X business days]."
+          hiddenText="Once your return is received and inspected, we`ll notify you about your refund approval. Refunds are issued to your original payment method within [X business days]."
         />
         <Info
           text="Exchanges"
-          hiddenText="Need a different size or color? Let us know. If available, we’ll ship the replacement after receiving your return."
+          hiddenText="Need a different size or color? Let us know. If available, we`ll ship the replacement after receiving your return."
         />
         <Info
           text="Damaged or Defective Items"
-          hiddenText="If you got a damaged or faulty item, email us within [X days] of delivery with pictures. We’ll make it right fast."
+          hiddenText="If you got a damaged or faulty item, email us within [X days] of delivery with pictures. We`ll make it right fast."
         />
       </div>
     </div>

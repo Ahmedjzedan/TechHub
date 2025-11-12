@@ -45,6 +45,7 @@ export default function WishlistButton({
   return (
     <button onClick={handleClick}>
       <WishListIcon
+        color="stroke-primary"
         className={isWishlistPage ? "" : ""}
         active={isWishlistPage}
       />

@@ -12,6 +12,11 @@ export default function Home() {
         searchValue="laptops"
         sectionName="Top Seller"
       />
+      <ItemsList
+        searchBy="category"
+        searchValue="smartphones"
+        sectionName="Good offers"
+      />
     </div>
   );
 }

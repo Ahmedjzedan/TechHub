@@ -10,7 +10,7 @@ export default function ItemDisplay({ images }: { images: string[] }) {
   const [imageNumber, setImageNumber] = useState(images.length - 1);
 
   return (
-    <div className="flex flex-grow border-2 border-border p-4 relative rounded-xl h-auto max-h-120 min-h-50 sm:min-h-100">
+    <div className="flex flex-grow border-2 border-border p-4 relative rounded-xl h-auto max-h-120 min-h-50 md:min-h-100">
       <div className="px-2 group absolute w-full z-1 inset-0 flex items-center justify-between sm:opacity-0 hover:opacity-100 transition-all duration-300">
         <ArrowButtons
           className=""

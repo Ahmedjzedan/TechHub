@@ -2,48 +2,33 @@
 
 import { useEffect, useState } from "react";
 import VerticalItem from "@/components/ui/items/verticalItem";
-import { useSession } from "@/components/providers/sessionProvider"; // Make sure this path is correct
-import { GetWishListItems } from "@/app/actions/actions"; // Your server action
+import { useSession } from "@/components/providers/sessionProvider";
+import { GetWishListItems } from "@/app/actions/actions";
+import { FullItem } from "@/app/actions/actions"; // 👈 1. Import FullItem
 
-// Define the Item type
-type Item = {
-  id: number;
-  name: string;
-  description: string | null;
-  price: number;
-  discount: number | null;
-  itemImages: {
-    id: number;
-    imageUrl: string;
-    displayOrder: number | null;
-  }[];
-  // ... other item properties
-};
+// ⛔️ Delete your old, incomplete 'Item' type definition
+// type Item = { ... };
 
 export default function WishlistItems() {
-  const [items, setItems] = useState<Item[]>([]);
-  const { user } = useSession(); // Get the user from your provider
+  // 2. Use FullItem for your state
+  const [items, setItems] = useState<FullItem[]>([]);
+  const { user } = useSession();
 
   useEffect(() => {
     const fetchWishlist = async () => {
       if (user) {
         console.log("Fetching wishlist for user:", user.id);
-        const data = (await GetWishListItems(user.id)) as Item[];
+        // 3. Cast the data to FullItem[]
+        const data = (await GetWishListItems(user.id)) as FullItem[];
         setItems(data);
       }
     };
 
     fetchWishlist();
-  }, [user]); // Re-run this when the user logs in
+  }, [user]);
 
-  // --- 1. HERE IS YOUR removeItem FUNCTION ---
-  // This function takes an ID and updates the state, removing the item.
-  const removeItem = (idToRemove: number) => {
-    setItems((currentItems) =>
-      currentItems.filter((item) => item.id !== idToRemove)
-    );
-  };
-  // --- END OF FUNCTION ---
+  // 4. Define the image type from FullItem
+  type ItemImage = FullItem["itemImages"][0];
 
   return (
     <div className="flex flex-1 m-4">
@@ -51,7 +36,7 @@ export default function WishlistItems() {
         {items.length > 0 ? (
           items.map(
             (
-              item: any // Using 'any' to avoid type conflicts for now
+              item: FullItem // 5. Use the FullItem type here
             ) => (
               <VerticalItem
                 id={item.id}
@@ -62,9 +47,10 @@ export default function WishlistItems() {
                 itemName={item.name}
                 itemPrice={item.price}
                 discount={item.discount || undefined}
-                removeItem={removeItem}
-                images={item.itemImages.map((image: any) =>
-                  image.imageUrl.trimEnd()
+                images={item.itemImages.map(
+                  (
+                    image: ItemImage // 6. Use ItemImage here
+                  ) => image.imageUrl.trimEnd()
                 )}
               />
             )

@@ -43,6 +43,8 @@ export default function Address() {
       </div>
       <div className="flex items-end flex-wrap gap-4">
         <LabledInput
+          type=""
+          name="herro"
           className="flex-2 min-w-64"
           label="Location address"
           placeholder="eg. 123 Main St"
@@ -50,11 +52,15 @@ export default function Address() {
       </div>
       <div className="flex gap-4 flex-wrap">
         <LabledInput
+          type=""
+          name="herro"
           className="flex-2 min-w-64"
           label="Nearest Landmark"
           placeholder="the great memorial"
         ></LabledInput>
         <LabledInput
+          type=""
+          name="herro"
           className="flex-2"
           label="Expiry Date"
           placeholder="eg. 12/30"

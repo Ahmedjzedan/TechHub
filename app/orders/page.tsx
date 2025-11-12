@@ -101,7 +101,7 @@ export default function Orders() {
             );
           })
         ) : (
-          <p>You haven't placed any orders yet.</p>
+          <p>You haven&apos;t placed any orders yet.</p>
         )}
       </div>
     </div>

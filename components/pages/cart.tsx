@@ -41,12 +41,23 @@ export default function Cart() {
     }
 
     async function fetchItemsLocal() {
-      const itemsJSON: any = localStorage.getItem("cartItems");
+      const itemsJSON: string | null = localStorage.getItem("cartItems");
+
       if (itemsJSON) {
         const data = await getItemsById(JSON.parse(itemsJSON));
-        setItems(data);
+
+        const cartItems: CartItemType[] = data.map((item) => ({
+          cartId: 0,
+          itemId: item.id,
+          quantity: 1,
+          item: item,
+        }));
+        // --- END OF FIX ---
+
+        console.log(cartItems);
+        setItems(cartItems); // 3. Now we're setting the correct type
       }
-      setLoaded(true); // Move setLoaded inside
+      setLoaded(true);
     }
 
     if (user) {
@@ -79,8 +90,6 @@ export default function Cart() {
   return (
     <div className="flex flex-col gap-4 p-4 overflow-x-hidden">
       {items.length > 0 ? (
-        // --- THIS IS THE FIX ---
-        // Wrap everything in a React Fragment
         <>
           {items.map((cartItem) => {
             return (
@@ -101,7 +110,6 @@ export default function Cart() {
             );
           })}
 
-          {/* This section is now INSIDE the items.length > 0 check */}
           <div className="flex flex-col w-full items-center my-4 gap-4">
             <div className="border-1 border-foreground w-1/2"></div>
             <div className="text-sm  text-text-body">
@@ -133,7 +141,7 @@ export default function Cart() {
               Check Out
             </Button>
           </div>
-        </> // --- END OF FRAGMENT ---
+        </>
       ) : (
         <p>Your cart is empty.</p>
       )}

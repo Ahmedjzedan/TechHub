@@ -1,38 +1,29 @@
 export default function ContactUs() {
   return (
     <div className="flex flex-wrap m-4 gap-4">
-      <Item
-        name="Phone numbers"
-        children={
-          <ul className="flex flex-col gap-2 mt-4">
-            <span>Zain</span>
-            <span>Asia Cell</span>
-            <span>Korek</span>
-          </ul>
-        }
-      />
-      <Item
-        name="Social Media"
-        children={
-          <ul className="flex flex-col gap-2 mt-4">
-            <span>Telegram</span>
-            <span>FaceBook</span>
-            <span>Instgram</span>
-            <span>Linkedin</span>
-          </ul>
-        }
-      />
-      <Item
-        name="Addresses"
-        children={
-          <ul className="flex flex-col gap-2 mt-4">
-            <span>Al hay</span>
-            <span>Al hay</span>
-            <span>Al hay</span>
-            <span>Al hay</span>
-          </ul>
-        }
-      />
+      <Item name="Phone numbers">
+        <ul className="flex flex-col gap-2 mt-4">
+          <span>Zain</span>
+          <span>Asia Cell</span>
+          <span>Korek</span>
+        </ul>
+      </Item>
+      <Item name="Social Media">
+        <ul className="flex flex-col gap-2 mt-4">
+          <span>Telegram</span>
+          <span>FaceBook</span>
+          <span>Instgram</span>
+          <span>Linkedin</span>
+        </ul>
+      </Item>
+      <Item name="Addresses">
+        <ul className="flex flex-col gap-2 mt-4">
+          <span>Al hay</span>
+          <span>Al hay</span>
+          <span>Al hay</span>
+          <span>Al hay</span>
+        </ul>
+      </Item>
     </div>
   );
 }

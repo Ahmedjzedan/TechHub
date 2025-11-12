@@ -68,7 +68,7 @@ export default function OrderDetailsPage() {
   );
 
   return (
-    <div className="flex flex-col w-200 gap-4 p-4 overflow-x-hidden">
+    <div className="flex flex-col gap-4 p-4 overflow-x-hidden">
       {/* 6. Map over the order items and render them */}
       {order.orderItems.map((orderItem) => (
         <HorizontalItem

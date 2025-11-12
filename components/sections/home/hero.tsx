@@ -70,17 +70,12 @@ export default function HeroSection() {
         />
       </div>
 
-      <div className="col-start-1 pl-4 md:flex flex flex-col justify-center mt-4">
-        <h1 className="text-lg font-bold mb-2">
-          {currentProduct.name} {/* 👈 Dynamic Name */}
-        </h1>
+      <div className="col-start-1  pl-4 md:flex flex flex-col justify-center items-center md:items-start mt-4">
+        <h1 className="text-lg font-bold mb-2">{currentProduct.name}</h1>
         <span className="text-sm text-text-secondary hidden md:block">
           {currentProduct.description || "No description available."}{" "}
-          {/* 👈 Dynamic Desc */}
         </span>
         <Link href={"/item/" + currentProduct.id}>
-          {" "}
-          {/* 👈 Dynamic Link */}
           <Button
             className="p-4 py-5 mt-4 border-2 border-foreground text-foreground hover:border-primary hover:cursor-pointer text-lg max-w-40"
             variant={"outline"}

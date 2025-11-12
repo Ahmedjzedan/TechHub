@@ -128,22 +128,25 @@ export default function SidebarContent({ setIsActive }: SidebarProps) {
             Icon={<SupportIcon className="w-5 h-5" />}
           >
             <SidebarButtonLink href="FAQ"> FAQ </SidebarButtonLink>
-            <SidebarButtonLink href="contactus"> Contact Us </SidebarButtonLink>
+            <SidebarButtonLink href="/contactus">
+              {" "}
+              Contact Us{" "}
+            </SidebarButtonLink>
           </SidebarGroupElement>
           <SidebarGroupElement
             name="Policies"
             Icon={<TermsIcon className="w-5 h-5" />}
           >
-            <SidebarButtonLink href="termsandconditions">
+            <SidebarButtonLink href="/termsandconditions">
               Terms & Conditions
             </SidebarButtonLink>
-            <SidebarButtonLink href="privacypolicy">
+            <SidebarButtonLink href="/privacypolicy">
               Privacy Policy
             </SidebarButtonLink>
-            <SidebarButtonLink href="returnpolicy">
+            <SidebarButtonLink href="/returnpolicy">
               Return Policy
             </SidebarButtonLink>
-            <SidebarButtonLink href="shipping"> Shipping </SidebarButtonLink>
+            <SidebarButtonLink href="/shipping"> Shipping </SidebarButtonLink>
           </SidebarGroupElement>
         </div>
         <div className="mx-auto mt-4">

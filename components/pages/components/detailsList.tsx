@@ -18,7 +18,7 @@ export default function DetailsList({
   }));
 
   return (
-    <div className="w-full border-2 border-border rounded-xl">
+    <div className="flex w-full flex-col flex-1 border-2 border-border rounded-xl">
       {items.map((item, index) => (
         <DetailsListItem
           key={index}

@@ -101,7 +101,7 @@ export default function VerticalItem({
                 AddToCart(user.id, id);
               } else {
                 const localCartJson = localStorage.getItem("cartItems");
-                let cart: number[] = localCartJson
+                const cart: number[] = localCartJson
                   ? JSON.parse(localCartJson)
                   : [];
                 if (!cart.includes(id)) {

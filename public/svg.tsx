@@ -242,12 +242,12 @@ export function FacebookIcon({ className, color }: SvgIconProps) {
 
 export function WishListIcon({
   className,
-  color = "stroke-primary",
-  active,
+  color = "stroke-foreground",
+  active = false,
 }: {
-  className: string;
+  className?: string;
   color?: string;
-  active: boolean;
+  active?: boolean;
 }) {
   return (
     <svg
@@ -257,7 +257,7 @@ export function WishListIcon({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={
-        "bg-background-shade-light group transition-all duration-300 " +
+        "bg-background-shade-light group transition-all duration-300 group " +
         className
       }
     >
@@ -267,14 +267,14 @@ export function WishListIcon({
         width="31"
         height="31.4442"
         rx="5.5"
-        className="stroke-primary stroke-2"
+        className={"stroke-2 " + color}
       />
       <path
         d="M11.5459 5.08984H20.4541C21.4728 5.08984 22.4998 6.20955 22.5 7.87109V25.9209C22.5 27.4583 21.6209 28.5295 20.6826 28.6816L16.3955 23.1533L16 22.6436L15.6045 23.1533L11.3164 28.6816C10.3785 28.529 9.5 27.4578 9.5 25.9209V7.87109C9.50019 6.20955 10.5272 5.08984 11.5459 5.08984Z"
-        className={`stroke-primary  ${
+        className={`${color}  ${
           active
-            ? "fill-primary hover:fill-primary/80"
-            : "hover:fill-primary fill-transparent"
+            ? "fill-primary group-hover:fill-primary/80"
+            : "group-hover:fill-primary fill-transparent"
         }  transition-all duration-200`}
       />
     </svg>

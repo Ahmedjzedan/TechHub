@@ -7,19 +7,7 @@ import {
   getItemsByName,
 } from "@/app/actions/actions";
 import VerticalItem from "@/components/ui/items/verticalItem";
-
-type Item = {
-  id: number;
-  name: string;
-  description: string | null;
-  price: number;
-  discount: number | null;
-  itemImages: {
-    id: number;
-    imageUrl: string;
-    displayOrder: number | null;
-  }[];
-};
+import { FullItem } from "@/app/actions/actions";
 
 type DynamicItemsListProps = {
   sectionName?: string;
@@ -32,22 +20,23 @@ export default function ItemsList({
   searchBy,
   searchValue,
 }: DynamicItemsListProps) {
-  const [items, setItems] = useState<Item[]>([]);
+  // 2. Use FullItem for your state
+  const [items, setItems] = useState<FullItem[]>([]);
 
   useEffect(() => {
     const fetchItems = async () => {
       if (!searchValue) return;
 
       console.log(`Fetching items by ${searchBy}: ${searchValue}`);
-      let data: Item[] = [];
+      let data: FullItem[] = []; // 3. Use FullItem here
 
       // Call the correct action based on the 'searchBy' prop
       if (searchBy === "category") {
-        data = (await getItemsByCategory(searchValue)) as Item[];
+        data = (await getItemsByCategory(searchValue)) as FullItem[]; // 4. Cast to FullItem[]
       } else if (searchBy === "tag") {
-        data = (await getItemsByTag(searchValue)) as Item[];
+        data = (await getItemsByTag(searchValue)) as FullItem[];
       } else if (searchBy === "name") {
-        data = (await getItemsByName(searchValue)) as Item[];
+        data = (await getItemsByName(searchValue)) as FullItem[];
       }
 
       setItems(data);
@@ -56,6 +45,9 @@ export default function ItemsList({
     fetchItems();
   }, [searchBy, searchValue]);
 
+  // 5. Define the image type from FullItem
+  type ItemImage = FullItem["itemImages"][0];
+
   return (
     <>
       {sectionName && (
@@ -63,26 +55,32 @@ export default function ItemsList({
           {sectionName}
         </h2>
       )}
-      <div className="flex flex-1 m-4">
+      <div className="flex justify-center flex-1 m-4">
         <ul className="flex flex-wrap gap-4">
           {items.length > 0 ? (
-            items.map((item: any) => (
-              <VerticalItem
-                id={item.id}
-                key={item.id}
-                itemDescription={
-                  item.description || "No description available."
-                }
-                itemName={item.name}
-                itemPrice={item.price}
-                discount={item.discount || undefined}
-                images={item.itemImages.map((image: any) =>
-                  image.imageUrl.trimEnd()
-                )}
-              />
-            ))
+            items.map(
+              (
+                item: FullItem // 6. Use FullItem type
+              ) => (
+                <VerticalItem
+                  id={item.id}
+                  key={item.id}
+                  itemDescription={
+                    item.description || "No description available."
+                  }
+                  itemName={item.name}
+                  itemPrice={item.price}
+                  discount={item.discount || undefined}
+                  images={item.itemImages.map(
+                    (
+                      image: ItemImage // 7. Use ItemImage type
+                    ) => image.imageUrl.trimEnd()
+                  )}
+                />
+              )
+            )
           ) : (
-            <p>No items found for "{searchValue}".</p>
+            <p>No items found for &quot;{searchValue}&quot;.</p>
           )}
         </ul>
       </div>

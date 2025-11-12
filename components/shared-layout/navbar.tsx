@@ -34,7 +34,7 @@ export default function Navbar() {
         {sidebarActive && mounted && <Sidebar setIsActive={setSidebarActive} />}
       </AnimatePresence>
       <div className="flex justify-between p-4 bg-background-shade-light">
-        <div className="flex items-center gap-4 md:gap-8 flex-grow">
+        <div className="flex items-center gap-4 md:gap-8 flex-1">
           <button
             className="cursor-pointer"
             onClick={() => setSidebarActive(true)}
@@ -59,7 +59,7 @@ export default function Navbar() {
             e.preventDefault(); // 1. Stop the page reload
             router.push("/search/" + search); // 2. 'search' must be a state variable
           }}
-          className="flex-grow hidden sm:flex"
+          className="flex-grow hidden sm:flex flex-1"
         >
           <Input
             name="search"
@@ -71,7 +71,7 @@ export default function Navbar() {
           />
         </form>
         <div className="flex-grow sm:hidden flex"></div>
-        <div className="flex justify-end items-center gap-4 flex-grow">
+        <div className="flex justify-end items-center gap-4 flex-1">
           {!!session.user ? (
             <Link href={"/userinfo"}>
               <PersonIcon color="fill-primary" className="h-8 w-8" />

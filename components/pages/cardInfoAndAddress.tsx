@@ -16,7 +16,11 @@ import { Button } from "../ui/button";
 import { useSession } from "../providers/sessionProvider";
 import { CheckOutCart } from "@/app/actions/actions";
 
-export default function ({ method }: { method?: "creditcard" | "COD" }) {
+export default function CardInfoAndAddress({
+  method,
+}: {
+  method?: "creditcard" | "COD";
+}) {
   const [paymentMethod, setPaymentMethod] = useState("");
 
   // --- BUG FIX 2: Default this to 'false' so you see the form first ---

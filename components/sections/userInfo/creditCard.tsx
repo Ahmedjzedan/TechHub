@@ -31,11 +31,15 @@ export default function CreditCard() {
       </div>
       <div className="flex gap-4 flex-wrap">
         <LabledInput
+          name="chongching"
+          type=""
           className="flex-1 min-w-64"
           label=" Card Holdername"
           placeholder="As printed on the card"
         ></LabledInput>
         <LabledInput
+          name="chongching"
+          type=""
           className="flex-2 min-w-64"
           label="Card Number"
           placeholder="eg. 4242-4242-4242-4242"
@@ -43,11 +47,15 @@ export default function CreditCard() {
       </div>
       <div className="flex gap-4">
         <LabledInput
+          name="chongching"
+          type=""
           className="flex-2"
           label="CVC"
           placeholder="eg. 123"
         ></LabledInput>
         <LabledInput
+          name="chongching"
+          type=""
           className="flex-2"
           label="Expiry Date"
           placeholder="eg. 12/30"

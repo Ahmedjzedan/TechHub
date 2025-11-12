@@ -26,6 +26,20 @@ type ItemImage = InferSelectModel<typeof itemImages>;
 type ItemAttribute = InferSelectModel<typeof itemAttributes>;
 type Tag = InferSelectModel<typeof tags>;
 
+type ItemTagRelation = InferSelectModel<typeof itemTags> & {
+  tag: Tag;
+};
+
+// Type for the "un-flattened" item returned by the query
+type ItemWithNestedTags = Item & {
+  itemImages: ItemImage[];
+  itemAttributes: ItemAttribute[];
+  category: Category | null;
+  brand: Brand | null;
+  itemTags: ItemTagRelation[];
+};
+2;
+
 export type FullItem = Item & {
   itemImages: ItemImage[];
   itemAttributes: ItemAttribute[];
@@ -46,20 +60,13 @@ export async function getItemsByCategory(categoryName: string) {
 
     const itemsInCategory = await db.query.items.findMany({
       where: eq(items.categoryId, category.id),
-      with: {
-        itemImages: true,
-        itemAttributes: true,
-        brand: true,
-        category: true,
-        itemTags: {
-          with: {
-            tag: true,
-          },
-        },
-      },
+      with: fullItemInclude, // Use your helper
     });
 
-    return itemsInCategory;
+    // --- THIS IS THE FIX ---
+    // Map the results through flattenTags before returning
+    return itemsInCategory.map(flattenTags);
+    // --- END OF FIX ---
   } catch (err) {
     console.error("Error fetching items by category:", err);
     return [];
@@ -114,9 +121,9 @@ const fullItemInclude = {
   },
 } as const;
 
-function flattenTags(item: any) {
-  const tags = item.itemTags.map((itemTag: any) => itemTag.tag);
-  return { ...item, tags };
+function flattenTags(item: ItemWithNestedTags): FullItem {
+  const tags = item.itemTags.map((itemTag) => itemTag.tag);
+  return { ...item, tags: tags };
 }
 
 export async function getItemsByTag(tagName: string) {
@@ -194,34 +201,33 @@ export async function createCart(userId: number) {
  */
 export async function getCartItems(userId: number) {
   try {
-    // We can do this in one efficient query using 'with'
     const cart = await db.query.carts.findFirst({
       where: eq(carts.userId, userId),
       with: {
         cartItems: {
-          // Eager load the cart items...
           with: {
-            item: { with: fullItemInclude }, // ...and the item details for each
+            item: { with: fullItemInclude },
           },
         },
       },
     });
 
     if (cart) {
-      // If we found a cart, return its items
-      return cart.cartItems;
+      const flattenedItems = cart.cartItems.map((cartItem) => {
+        return {
+          ...cartItem,
+          item: flattenTags(cartItem.item),
+        };
+      });
+      return flattenedItems;
     }
 
-    // --- Cart not found, so we create one ---
     console.log(`No cart found for user ${userId}, creating one...`);
     await createCart(userId);
-
-    // The new cart is empty, so just return an empty array.
-    // No need to query again.
     return [];
   } catch (err) {
     console.error("Error fetching cart items:", err);
-    return []; // Return empty array on error
+    return [];
   }
 }
 
