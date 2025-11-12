@@ -106,10 +106,11 @@ export default function SidebarContent({ setIsActive }: SidebarProps) {
           >
             <SidebarButtonLink href="/cart"> Cart </SidebarButtonLink>
             <SidebarButtonLink auth={true} href="/wishlist">
-              {" "}
-              Wishlist{" "}
+              Wishlist
             </SidebarButtonLink>
-            <SidebarButtonLink href="/orders"> Orders </SidebarButtonLink>
+            <SidebarButtonLink auth={true} href="/orders">
+              Orders
+            </SidebarButtonLink>
           </SidebarGroupElement>
           <SidebarGroupElement
             name="Account"
@@ -118,7 +119,7 @@ export default function SidebarContent({ setIsActive }: SidebarProps) {
             <SidebarButtonLink href="/signin">
               Login / Sign In
             </SidebarButtonLink>
-            <SidebarButtonLink href="/userinfo">
+            <SidebarButtonLink auth={true} href="/userinfo">
               User Info & Settings
             </SidebarButtonLink>
           </SidebarGroupElement>
@@ -127,7 +128,7 @@ export default function SidebarContent({ setIsActive }: SidebarProps) {
             name="Support"
             Icon={<SupportIcon className="w-5 h-5" />}
           >
-            <SidebarButtonLink href="FAQ"> FAQ </SidebarButtonLink>
+            <SidebarButtonLink href="/FAQ"> FAQ </SidebarButtonLink>
             <SidebarButtonLink href="/contactus">
               {" "}
               Contact Us{" "}

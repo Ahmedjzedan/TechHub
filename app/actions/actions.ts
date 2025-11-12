@@ -635,6 +635,88 @@ export async function GetOrderItems(orderId: number) {
     return null;
   }
 }
+
+export async function updateCartQuantity({
+  userId,
+  itemId,
+  action,
+}: {
+  userId: number;
+  itemId: number;
+  action: "increase" | "decrease";
+}) {
+  try {
+    // 1. Find the user's cart
+    const cart = await db.query.carts.findFirst({
+      where: eq(carts.userId, userId),
+      columns: { id: true },
+    });
+
+    if (!cart) {
+      return { success: false, error: "Cart not found." };
+    }
+
+    // --- Decrease Logic ---
+    if (action === "decrease") {
+      // First, check the current quantity
+      const cartItem = await db.query.cartItems.findFirst({
+        where: and(eq(cartItems.cartId, cart.id), eq(cartItems.itemId, itemId)),
+        columns: { quantity: true },
+      });
+
+      // If the item isn't in the cart, do nothing
+      if (!cartItem) {
+        return { success: true, message: "Item not in cart." };
+      }
+
+      // If quantity is 1, delete the item
+      if (cartItem.quantity <= 1) {
+        await db
+          .delete(cartItems)
+          .where(
+            and(eq(cartItems.cartId, cart.id), eq(cartItems.itemId, itemId))
+          );
+      } else {
+        // Otherwise, just subtract 1
+        await db
+          .update(cartItems)
+          .set({ quantity: sql`${cartItems.quantity} - 1` })
+          .where(
+            and(eq(cartItems.cartId, cart.id), eq(cartItems.itemId, itemId))
+          );
+      }
+    }
+
+    if (action === "increase") {
+      await db
+        .update(cartItems)
+        .set({ quantity: sql`${cartItems.quantity} + 1` })
+        .where(
+          and(eq(cartItems.cartId, cart.id), eq(cartItems.itemId, itemId))
+        );
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error("Error in updateCartQuantity:", err);
+    return { success: false, error: "Failed to update quantity." };
+  }
+}
+
+export async function getItems(): Promise<FullItem[]> {
+  try {
+    // 1. Fetch all items and eager-load their relations
+    const allItems = await db.query.items.findMany({
+      with: fullItemInclude,
+    });
+
+    // 2. Flatten the tags for each item
+    return allItems.map(flattenTags);
+  } catch (err) {
+    console.error("Error fetching all items:", err);
+    return [];
+  }
+}
 // export async function getOrders(userid) {}
 
 // export async function getOrderItems(orderId) {}

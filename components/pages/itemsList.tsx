@@ -5,13 +5,15 @@ import {
   getItemsByCategory,
   getItemsByTag,
   getItemsByName,
+  getItemsById,
+  getItems,
 } from "@/app/actions/actions";
 import VerticalItem from "@/components/ui/items/verticalItem";
 import { FullItem } from "@/app/actions/actions";
 
 type DynamicItemsListProps = {
   sectionName?: string;
-  searchBy: "category" | "tag" | "name";
+  searchBy: "category" | "tag" | "name" | "all";
   searchValue: string;
 };
 
@@ -20,32 +22,38 @@ export default function ItemsList({
   searchBy,
   searchValue,
 }: DynamicItemsListProps) {
-  // 2. Use FullItem for your state
   const [items, setItems] = useState<FullItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true); // 1. Add loading state
 
   useEffect(() => {
     const fetchItems = async () => {
-      if (!searchValue) return;
+      setIsLoading(true); // 2. Set loading to true at the start
+      if (!searchValue) {
+        setItems([]); // Clear items if search is empty
+        setIsLoading(false); // Stop loading
+        return;
+      }
 
       console.log(`Fetching items by ${searchBy}: ${searchValue}`);
-      let data: FullItem[] = []; // 3. Use FullItem here
+      let data: FullItem[] = [];
 
-      // Call the correct action based on the 'searchBy' prop
       if (searchBy === "category") {
-        data = (await getItemsByCategory(searchValue)) as FullItem[]; // 4. Cast to FullItem[]
+        data = (await getItemsByCategory(searchValue)) as FullItem[];
       } else if (searchBy === "tag") {
         data = (await getItemsByTag(searchValue)) as FullItem[];
       } else if (searchBy === "name") {
         data = (await getItemsByName(searchValue)) as FullItem[];
+      } else if (searchBy === "all") {
+        data = (await getItems()) as FullItem[];
       }
 
       setItems(data);
+      setIsLoading(false); // 3. Set loading to false after data is fetched
     };
 
     fetchItems();
   }, [searchBy, searchValue]);
 
-  // 5. Define the image type from FullItem
   type ItemImage = FullItem["itemImages"][0];
 
   return (
@@ -57,29 +65,27 @@ export default function ItemsList({
       )}
       <div className="flex justify-center flex-1 m-4">
         <ul className="flex flex-wrap gap-4">
-          {items.length > 0 ? (
-            items.map(
-              (
-                item: FullItem // 6. Use FullItem type
-              ) => (
-                <VerticalItem
-                  id={item.id}
-                  key={item.id}
-                  itemDescription={
-                    item.description || "No description available."
-                  }
-                  itemName={item.name}
-                  itemPrice={item.price}
-                  discount={item.discount || undefined}
-                  images={item.itemImages.map(
-                    (
-                      image: ItemImage // 7. Use ItemImage type
-                    ) => image.imageUrl.trimEnd()
-                  )}
-                />
-              )
-            )
+          {/* 4. Add loading check */}
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : items.length > 0 ? ( // 5. Check items *after* loading
+            items.map((item: FullItem) => (
+              <VerticalItem
+                id={item.id}
+                key={item.id}
+                itemDescription={
+                  item.description || "No description available."
+                }
+                itemName={item.name}
+                itemPrice={item.price}
+                discount={item.discount || undefined}
+                images={item.itemImages.map((image: ItemImage) =>
+                  image.imageUrl.trimEnd()
+                )}
+              />
+            ))
           ) : (
+            // 6. This now only shows after loading is false
             <p>No items found for &quot;{searchValue}&quot;.</p>
           )}
         </ul>

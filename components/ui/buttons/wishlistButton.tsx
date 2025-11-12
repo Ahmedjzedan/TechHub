@@ -5,7 +5,6 @@ import { useSession } from "@/components/providers/sessionProvider";
 import { addToWishList, removeFromWishList } from "@/app/actions/actions";
 import { toast } from "sonner";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
 
 // 1. Define the props correctly
 type WishlistButtonProps = {

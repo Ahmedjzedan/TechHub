@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { AddToCart, removeFromCart } from "@/app/actions/actions";
 import { useSession } from "@/components/providers/sessionProvider";
 import { toast } from "sonner";
+import Link from "next/link"; // Make sure Link is imported
 
 type HorizontalItemProps = {
   removeItem?: (id: number) => void;
@@ -20,6 +21,8 @@ type HorizontalItemProps = {
   showItem?: boolean;
   isCartItem: boolean;
   quantity: number;
+  onIncrease?: () => void; // Add handler prop
+  onDecrease?: () => void; // Add handler prop
 };
 
 export default function HorizontalItem({
@@ -33,6 +36,8 @@ export default function HorizontalItem({
   itemPrice,
   showItem,
   isCartItem,
+  onIncrease, // Get handlers from props
+  onDecrease,
 }: HorizontalItemProps) {
   const session = useSession();
   const user = session.user;
@@ -43,15 +48,29 @@ export default function HorizontalItem({
   if (discount == 0) {
     discount = undefined;
   }
+
+  // Helper for the remove button
+  const handleRemoveClick = () => {
+    if (user) {
+      removeFromCart(user.id, id);
+    } else {
+      const localCartJson = localStorage.getItem("cartItems");
+      if (localCartJson) {
+        const cart: number[] = JSON.parse(localCartJson);
+        const newCart = cart.filter((itemId) => itemId !== id);
+        localStorage.setItem("cartItems", JSON.stringify(newCart));
+      }
+    }
+    toast.success(`${itemName} is removed from cart`);
+    if (removeItem) {
+      removeItem(id);
+    }
+  };
+
   return (
     <div className="flex flex-col md:flex-row flex-1 gap-4 bg-background-shade-light rounded-md border-2 border-border hover:border-primary transition-all duration-300">
       <div className="flex ">
         <div className="relative group flex items-center p-4">
-          {/* <PreviewImages
-          className=""
-          images={images}
-          setActiveImage={setCurrentItemIndex}
-        /> */}
           <div className="px-2 absolute z-10 inset-0 flex items-center justify-between opacity-0 hover:opacity-100 transition-all duration-300">
             <ArrowButtons
               currentItemIndex={currentItemIndex}
@@ -62,8 +81,8 @@ export default function HorizontalItem({
           <div className="relative pointer-events-none h-full w-auto min-h-10 max-h-40 min-w-30 md:min-w-30 flex items-center justify-center my-2 ">
             <div className="w-full h-full">
               <Image
-                src={images[currentItemIndex]}
-                alt="xps laptop"
+                src={images[currentItemIndex] || "/images/placeholder.png"} // Added a fallback
+                alt={itemName}
                 fill
                 className="object-contain"
               />
@@ -93,7 +112,41 @@ export default function HorizontalItem({
           </span>
         </div>{" "}
       </div>
-      <div className="flex-1 hidden md:flex"></div>
+      <div className="flex-1 hidden md:flex rounded-2xl"></div>
+
+      {/* Show quantity controls only if it's a cart item */}
+      {isCartItem ? (
+        <div className="flex justify-center items-center rounded-2xl">
+          <div className="flex gap-2 ">
+            <button
+              onClick={onDecrease} // Call parent's function
+              className="bg-background border-2 border-border rounded-4xl px-1 
+             transition-all duration-200 
+             hover:bg-primary hover:border-foreground 
+             hover:shadow-md hover:shadow-primary/50"
+            >
+              -
+            </button>
+
+            <div className="bg-primary text-foreground border-foreground rounded-4xl px-2 py-[1px]">
+              {quantity}
+            </div>
+
+            <button
+              onClick={onIncrease} // Call parent's function
+              className="bg-background border-2 border-border rounded-4xl px-1 
+             transition-all duration-200 
+             hover:bg-primary hover:border-foreground 
+             hover:shadow-md hover:shadow-primary/50"
+            >
+              +
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex-1 hidden md:flex rounded-2xl"></div> // Empty spacer
+      )}
+
       <div
         className={
           showItem
@@ -106,34 +159,7 @@ export default function HorizontalItem({
         ) : (
           <div className=" flex  gap-4 flex-col">
             {isCartItem ? (
-              <Button
-                onClick={() => {
-                  if (user) {
-                    removeFromCart(user.id, id);
-                  } else {
-                    const localCartJson = localStorage.getItem("cartItems");
-
-                    // 2. If it exists, parse it; otherwise, do nothing.
-                    if (localCartJson) {
-                      const cart: number[] = JSON.parse(localCartJson);
-
-                      // 3. Create a new array *without* the item we're removing
-                      const newCart = cart.filter((itemId) => itemId !== id);
-
-                      // 4. Save the new array back to local storage
-                      localStorage.setItem(
-                        "cartItems",
-                        JSON.stringify(newCart)
-                      );
-                    }
-                  }
-                  toast.success(`${itemName} is removed from cart`);
-                  if (removeItem) {
-                    removeItem(id);
-                  }
-                }}
-                className="w-full md:w-30"
-              >
+              <Button onClick={handleRemoveClick} className="w-full md:w-30">
                 Remove Item
               </Button>
             ) : (
@@ -156,22 +182,18 @@ export default function HorizontalItem({
                     }
                     localStorage.setItem("cartItems", JSON.stringify(cart));
                   }
+                  toast.success(`${itemName} added to cart`);
                 }}
                 className="w-30"
               >
                 Add to cart
               </Button>
             )}
-            <Button
-              onClick={() => {
-                router.push("/foo");
-                router.push(`/item/${id}`);
-              }}
-              className="w-full md:w-30"
-              variant="outline"
-            >
-              See more
-            </Button>
+            <Link href={`/item/${id}`}>
+              <Button className="w-full md:w-30" variant="outline">
+                See more
+              </Button>
+            </Link>
           </div>
         )}
       </div>

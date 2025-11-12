@@ -2,11 +2,10 @@ import { Button } from "../button";
 import { Input } from "../input";
 
 type checkoutSummeryProps = {
-  prices: number[];
+  subTotal: number;
 };
 
-export default function CheckoutSummery({ prices }: checkoutSummeryProps) {
-  const subTotal = prices.reduce((prev, curr) => prev + curr, 0);
+export default function CheckoutSummery({ subTotal }: checkoutSummeryProps) {
   return (
     <div>
       <div className="flex justify-center items-center w-full">
@@ -19,7 +18,7 @@ export default function CheckoutSummery({ prices }: checkoutSummeryProps) {
         </div>
         <div className="flex items-center gap-2">
           <span className="text-text-heading text-md">Shipping:</span>
-          <span className="text-primary"> {123}$</span>
+          <span className="text-primary"> {"free"}$</span>
         </div>
       </div>
       {/* <div className="">
@@ -30,7 +29,10 @@ export default function CheckoutSummery({ prices }: checkoutSummeryProps) {
       </div> */}
       <div className="flex justify-center items-center gap-2 mt-4">
         <span className="text-text-heading text-lg font-bold">Total: </span>
-        <span className="text-primary"> {subTotal + 10}$</span>
+        <span className="text-primary font-bold text-lg">
+          {" "}
+          {subTotal + 10}$
+        </span>
       </div>
     </div>
   );

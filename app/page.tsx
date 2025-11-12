@@ -12,11 +12,7 @@ export default function Home() {
         searchValue="laptops"
         sectionName="Top Seller"
       />
-      <ItemsList
-        searchBy="category"
-        searchValue="smartphones"
-        sectionName="Good offers"
-      />
+      <ItemsList searchBy="all" searchValue="all" sectionName="Good offers" />
     </div>
   );
 }

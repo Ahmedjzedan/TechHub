@@ -14,11 +14,16 @@ export default function WishlistItems() {
   const [items, setItems] = useState<FullItem[]>([]);
   const { user } = useSession();
 
+  const removeItem = (idToRemove: number) => {
+    setItems((currentItems) =>
+      currentItems.filter((item) => item.id !== idToRemove)
+    );
+  };
+
   useEffect(() => {
     const fetchWishlist = async () => {
       if (user) {
         console.log("Fetching wishlist for user:", user.id);
-        // 3. Cast the data to FullItem[]
         const data = (await GetWishListItems(user.id)) as FullItem[];
         setItems(data);
       }
@@ -47,6 +52,7 @@ export default function WishlistItems() {
                 itemName={item.name}
                 itemPrice={item.price}
                 discount={item.discount || undefined}
+                removeItem={removeItem}
                 images={item.itemImages.map(
                   (
                     image: ItemImage // 6. Use ItemImage here

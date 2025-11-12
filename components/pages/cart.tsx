@@ -2,17 +2,22 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { getCartItems, getItemsById } from "@/app/actions/actions";
+import {
+  getCartItems,
+  getItemsById,
+  updateCartQuantity, // 1. Import this
+} from "@/app/actions/actions";
 import HorizontalItem from "@/components/ui/items/horizontalItem";
 import { FullItem } from "@/app/actions/actions";
 import { useSession } from "@/components/providers/sessionProvider";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import CheckoutSummery from "../ui/items/checkoutSummery"; // Make sure to import
 
 type image = { id: number; itemId: number; imageUrl: string };
 
 type CartItemType = {
-  cartId: number;
+  cartId: number | null; // Allow null for local cart
   itemId: number;
   quantity: number;
   item: FullItem;
@@ -25,7 +30,7 @@ export default function Cart() {
 
   const [items, setItems] = useState<CartItemType[]>([]);
   const [loaded, setLoaded] = useState(false);
-  const [shipment, setShipment] = useState(10); // Keep shipment as state
+  const [shipment, setShipment] = useState(10);
 
   const removeItem = (idToRemove: number) => {
     setItems((currentItems) =>
@@ -33,29 +38,53 @@ export default function Cart() {
     );
   };
 
+  // 2. --- THIS IS THE NEW HANDLER ---
+  const handleQuantityChange = (
+    itemId: number,
+    action: "increase" | "decrease"
+  ) => {
+    // 2a. Optimistically update the UI state
+    setItems(
+      (currentItems) =>
+        currentItems
+          .map((item) => {
+            if (item.item.id === itemId) {
+              const newQuantity =
+                action === "increase" ? item.quantity + 1 : item.quantity - 1;
+              return { ...item, quantity: newQuantity };
+            }
+            return item;
+          })
+          .filter((item) => item.quantity > 0) // 2b. Automatically remove if quantity is 0
+    );
+
+    // 2c. Sync with the server in the background
+    if (user) {
+      updateCartQuantity({ userId: user.id, itemId: itemId, action: action });
+    } else {
+      // TODO: Add local storage logic here
+    }
+  };
+  // --- END OF NEW HANDLER ---
+
   useEffect(() => {
     async function fetchItemsDB(userId: number) {
       const data = await getCartItems(userId);
-      setItems(data);
-      setLoaded(true); // Move setLoaded inside
+      setItems(data as CartItemType[]); // Cast to ensure type match
+      setLoaded(true);
     }
 
     async function fetchItemsLocal() {
       const itemsJSON: string | null = localStorage.getItem("cartItems");
-
       if (itemsJSON) {
         const data = await getItemsById(JSON.parse(itemsJSON));
-
-        const cartItems: CartItemType[] = data.map((item) => ({
-          cartId: 0,
+        const cartItems: CartItemType[] = data.map((item: FullItem) => ({
+          cartId: null,
           itemId: item.id,
           quantity: 1,
           item: item,
         }));
-        // --- END OF FIX ---
-
-        console.log(cartItems);
-        setItems(cartItems); // 3. Now we're setting the correct type
+        setItems(cartItems);
       }
       setLoaded(true);
     }
@@ -67,16 +96,14 @@ export default function Cart() {
     }
   }, [user]);
 
-  // Calculate subTotal directly from the items state
+  // This calculation is now always correct
   const subTotalRaw = items.reduce((total, cartItem) => {
     const price = cartItem.item.discount
       ? cartItem.item.price -
         cartItem.item.price * (cartItem.item.discount / 100)
       : cartItem.item.price;
-
     return total + price * cartItem.quantity;
   }, 0);
-
   const subTotal = Math.round(subTotalRaw * 100) / 100;
 
   if (!loaded) {
@@ -106,31 +133,19 @@ export default function Cart() {
                   img.imageUrl.trimEnd()
                 )}
                 quantity={cartItem.quantity}
+                // 3. --- PASS HANDLERS TO CHILD ---
+                onIncrease={() =>
+                  handleQuantityChange(cartItem.item.id, "increase")
+                }
+                onDecrease={() =>
+                  handleQuantityChange(cartItem.item.id, "decrease")
+                }
               />
             );
           })}
 
-          <div className="flex flex-col w-full items-center my-4 gap-4">
-            <div className="border-1 border-foreground w-1/2"></div>
-            <div className="text-sm  text-text-body">
-              <h2>
-                Sub total:{" "}
-                <span className="text-primary">${subTotal.toFixed(2)}</span>
-              </h2>
-              <h2>
-                Shipment:{" "}
-                <span className="text-primary">${shipment.toFixed(2)}</span>
-              </h2>
-            </div>
-            <div className="font-bold">
-              <h1>
-                Total:{" "}
-                <span className="text-primary">
-                  ${(subTotal + shipment).toFixed(2)}
-                </span>
-              </h1>
-            </div>
-          </div>
+          <CheckoutSummery subTotal={subTotal} />
+
           <div className="flex justify-center">
             <Button
               onClick={() => {

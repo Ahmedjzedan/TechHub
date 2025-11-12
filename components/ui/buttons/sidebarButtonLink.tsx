@@ -27,7 +27,7 @@ export default function SidebarButtonLink({
     setIsActive(false);
     if (auth) {
       if (!user) {
-        toast.error("You must sign in to store items in your wishlist!", {
+        toast.error("You must sign in to visit this page!", {
           position: "bottom-right",
         });
         return;

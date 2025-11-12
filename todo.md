@@ -1,1 +1,1 @@
-add a quantity marker to the cart items
+Add some more items and images
