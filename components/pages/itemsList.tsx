@@ -85,7 +85,6 @@ export default function ItemsList({
               />
             ))
           ) : (
-            // 6. This now only shows after loading is false
             <p>No items found for &quot;{searchValue}&quot;.</p>
           )}
         </ul>

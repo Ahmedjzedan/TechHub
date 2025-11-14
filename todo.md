@@ -1,1 +1,5 @@
-Add some more items and images
+learn and use functions
+
+learn and use for loops
+
+learn and use while loops

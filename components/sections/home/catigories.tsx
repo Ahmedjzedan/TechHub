@@ -15,11 +15,6 @@ export default function Catigories({ className }: { className: string }) {
       className={`flex flex-wrap justify-center items-end mt-4 gap-4 text-secondary ${className}`}
     >
       <CatigoryItem
-        link="/category/desktops"
-        name="Desktop"
-        icon={<DeskTopIcon />}
-      />
-      <CatigoryItem
         link="/category/laptops"
         name="Laptop"
         icon={<LaptopIcon />}
